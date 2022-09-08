@@ -10,26 +10,7 @@ export default function UpdateNote({...props}) {
         notecontent: ""
     });
     useEffect(() => {
-        async function fetchData() {
-            const response = await fetch(`http://localhost:5000/note/${props.selectedNoteId}`);
-
-            if (!response.ok) {
-                const message = "İstediğiniz not kaydına ulaşılamadı, hatayı not edip yazılımcınıza iletiniz :" + response.statusText;
-                props.showToastMessage(message);
-                return;
-            }
-
-            const note = await response.json();
-            if (!note) {
-                const message = "İstediğiniz " + props.selectedNoteId + " numaralı not kaydı bulunamadı";
-                props.showToastMessage(message);
-                return;
-            }
-
-            setForm(note);
-        }
-
-        fetchData();
+        setForm({notename: props.selectedNoteName, notecontent: props.selectedNoteContent});
         props.setInputDisabled();
         props.setEditNoteButtonDisabled(true);
         props.setDisplayNoteButtonDisabled(true);
@@ -37,7 +18,6 @@ export default function UpdateNote({...props}) {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    // These methods will update the state properties.
     function updateForm(value: { notename?: string; notecontent?: string; }) {
         return setForm((prev) => {
             return { ...prev, ...value };
@@ -51,7 +31,6 @@ export default function UpdateNote({...props}) {
             notecontent: form.notecontent,
         };
 
-        // This will send a post request to update the data in the database.
         await fetch(`http://localhost:5000/update/${props.selectedNoteId}`, {
             method: "POST",
             body: JSON.stringify(editedNote),
@@ -61,15 +40,16 @@ export default function UpdateNote({...props}) {
         });
         props.setDisplayNoteButtonDisabled(true);
         props.setEditNoteButtonDisabled(true);
+        props.setInputDisabled();
         const message = editedNote.notename + " isimli not güncellendi";
         props.showToastMessage(message);
+        props.setIsNoteSelectedDisable();
         props.getNotes();
     }
 
-    // This following section will display the form that takes input from the user to update the data.
     return (
         <div>
-            <h3>{props.selectedNoteName} {props.noteDetailInfo.title}</h3>
+            <h3>{props.selectedNoteName} {props.selectedNoteName.title?props.noteDetailInfo.title:""}</h3>
             <Button
                 outline
                 disabled={props.isEditNoteButtonDisabled}

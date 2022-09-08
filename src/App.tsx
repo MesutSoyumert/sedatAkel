@@ -124,12 +124,14 @@ export default class App extends Component {
                  shouldIShowValues = {this.state.shouldIShowValues}
                  isEditNoteButtonDisabled={this.state.isEditNoteButtonDisabled}
                  isDisplayNoteButtonDisabled={this.state.isDisplayNoteButtonDisabled}
+                 setIsNoteSelectedDisable = {this.setIsNoteSelectedDisable}
                  noteDetailInfo={this.noteDetailInfo}/>
     }
     
     shouldIShowNoteDetail = () => {
         if (this.isNoteSelected)  { return <this.showNoteDetail/>}
     }
+    setIsNoteSelectedDisable = () => {this.isNoteSelected = false};
 
     setInputEnabled = () => { this.isInputDisabled = false};
     setInputDisabled = () => { this.isInputDisabled = true};
