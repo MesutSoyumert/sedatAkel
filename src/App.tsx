@@ -26,8 +26,7 @@ export default class App extends Component {
     isNoteSelected = false;
     apiUrl = "http://localhost:5000/note";
 
-    componentDidMount() { this.setState({});
-                          this.getNotes();}
+    componentDidMount() { this.getNotes();}
 
     setEditNoteButtonDisabled = (status:boolean) => {
         this.setState({isEditNoteButtonDisabled: status});
@@ -52,14 +51,13 @@ export default class App extends Component {
     }
 
     getNotes =  () =>  {
-        this.setState({notes:[]});
-
         fetch(this.apiUrl)
             .then(response => response.json())
             .then(data => this.setState({notes:data}));
         this.setState({selectedNotId: ""});
         this.setState({selectedNoteName: ""});
         this.setState({selectedNoteContent: ""});
+        this.handleRefresh();
     };
 
     selectNote = (note: { _id: any, notename:any, notecontent:any }) => {
@@ -72,10 +70,6 @@ export default class App extends Component {
         this.setState({shouldIShowValues: false});
         this.setState({isDisplayNoteButtonDisabled: false});
         this.setState({isEditNoteButtonDisabled: false});
-        console.log("came to selectNote");
-        console.log("selectedNotId : " + this.state.selectedNoteId);
-        console.log("selectedNoteName : " + this.state.selectedNoteName);
-        console.log("selectedNoteContent : " + this.state.selectedNoteContent);
     }
     
     createNote = () => {
@@ -96,11 +90,16 @@ export default class App extends Component {
                 window.alert(error);
                 return;
             });
-
-        this.showToastMessage("Yeni boş not " + newNote.notename + " ismi ile oluşturuldu");
         this.setState({shouldIShowValues: false});
+        this.showToastMessage("Yeni boş not " + newNote.notename + " ismi ile oluşturuldu");
+
         this.getNotes();
+        window.location.reload();
     }
+
+    handleRefresh = () => {
+        this.setState({});
+    };
 
     showToastMessage = (showMessage:string) => {
         toast.success(showMessage, {
